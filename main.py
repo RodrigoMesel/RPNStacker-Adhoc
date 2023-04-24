@@ -1,5 +1,14 @@
-def isValidToken(token): # Checagem se o token é valido
-    if(token == '+' or token == '-' or token == '*' or token == '/' or token.isnumeric()):
+import re
+
+def isNum(token):
+    x = re.findall( "[0-9]", str(token))
+    if x:
+        return True
+    return False
+
+def isOP(token):
+    x = re.findall("[+-/*]", token)
+    if x:
         return True 
     return False
 
@@ -13,39 +22,44 @@ def doOperation(operator, operand1, operand2): # Faz a operação
     if operator == '/':
         return operand1 / operand2
 
-
 file = open("example.txt", "r")
+#file = open("exampleWithError.txt", "r") # Se quiser testar com erro descomenta essa linha
 content = file.read()
 content = content.strip() #Le o input
 
 tokenList = []
+
 #Scanning:
-for lines in content: #trata o input e ccria a lista de tokens
-    lines = lines.rstrip()
-    if lines == '':
+for line in content: #trata o input e ccria a lista de tokens
+    line = line.rstrip()
+    if line == '':
         continue
-    elif (not isValidToken(lines)):
-        print("Token Invalido: " + lines)
-    else: 
-        if(lines == '+'):
+
+    if (isNum(line) or isOP(line)): #Checagem com regex
+
+        if(line == '+'):
             tokenList.append("type= PLUS")
             tokenList.append("lexeme= +")
 
-        elif(lines == '-'):
+        elif(line == '-'):
             tokenList.append("type= MINUS")
             tokenList.append("lexeme= -")    
 
-        elif(lines == '*'):
+        elif(line == '*'):
             tokenList.append("type= STAR")
             tokenList.append("lexeme= *")  
 
-        elif(lines == '/'):
+        elif(line == '/'):
             tokenList.append("type= SLASH")
             tokenList.append("lexeme= /")  
 
         else:
             tokenList.append("type= NUM")
-            tokenList.append("lexeme= " + str(lines))
+            tokenList.append("lexeme= " + str(line))
+    
+    else:
+        print( line + " não é um token válido" )
+        raise Exception (" Token Inválido ")
 
 
 stack = []
@@ -57,4 +71,6 @@ for i in range(0, len(tokenList), 2): # Vai fazendo as operações usando a stac
         op2 = stack.pop()
         stack.append(doOperation(tokenList[i+1][8:], op2, op1))
 
-print("Resultado final: " + stack.pop())
+print("Resultado final: " + str(stack.pop()))
+
+
