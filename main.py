@@ -1,16 +1,18 @@
 import re
 
-def isNum(token):
-    x = re.findall( "[0-9]", str(token))
-    if x:
-        return True
-    return False
+class Regex:
 
-def isOP(token):
-    x = re.findall("[+-/*]", token)
-    if x:
-        return True 
-    return False
+    def isNum(token):
+        x = re.findall( "[0-9]", str(token))
+        if x:
+            return True
+        return False
+
+    def isOP(token):
+        x = re.findall("[+-/*]", token)
+        if x:
+            return True 
+        return False
 
 def doOperation(operator, operand1, operand2): # Faz a operação
     if operator == '+':
@@ -22,20 +24,20 @@ def doOperation(operator, operand1, operand2): # Faz a operação
     if operator == '/':
         return operand1 / operand2
 
+
 file = open("example.txt", "r")
 #file = open("exampleWithError.txt", "r") # Se quiser testar com erro descomenta essa linha
-content = file.read()
-content = content.strip() #Le o input
-
-tokenList = []
+content = file.read() #Le o input
+content = content.split() #Trata o input
+regex = Regex #Instancia a classe regex
+tokenList = [] #Cria uma lista de tokens
 
 #Scanning:
-for line in content: #trata o input e ccria a lista de tokens
-    line = line.rstrip()
+for line in content: 
     if line == '':
         continue
 
-    if (isNum(line) or isOP(line)): #Checagem com regex
+    if (regex.isNum(line) or regex.isOP(line)): #Checagem com regex
 
         if(line == '+'):
             tokenList.append("type= PLUS")
